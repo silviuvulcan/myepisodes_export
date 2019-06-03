@@ -1,4 +1,6 @@
-Forked as the original repo was read-only and one fix was pending as a pull request. I incorporated it and as of 2019-06 it is working.
+@silviuvulcan: Forked as the original repo was read-only and one fix was pending as a pull request. I incorporated it and as of 2019-06 it is working.
+
+Original README below:
 
 _Note: I am not supporting this as it was just a run-once script I put up if it is useful to others. Will accept pull requests though if it will help others_
 
