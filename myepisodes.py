@@ -51,6 +51,7 @@ class MyEpisodes(object):
 
         return True
 
+    #let id be url now // API changes in myepisodes
     def get_show_list(self):
         # Populate shows with the list of show_ids in our account
         wasted_url = "%s/%s" % (MYEPISODE_URL, "life_wasted.php")
@@ -62,27 +63,30 @@ class MyEpisodes(object):
         mylist_tr = mylist.findAll("tr")[1:-1]
         for row in mylist_tr:
             link = row.find('a', {'href': True})
-            showid = urlparse.parse_qs(link.get('href'))['showid'][0]
-            self.shows.append(int(showid))
-            self.show_list.append({'id': int(showid), 'name': link.string})
+            showid = link.get('href')
+            self.shows.append(str(showid))
+            self.show_list.append({'id': str(showid), 'name': link.string})
         return True
 
+    #let id be url now // API changes in myepisodes
     def get_show_data(self, show_id):
         # Try to add the show to your account.
-        url = "%s/views.php?type=epsbyshow&showid=%d" % (MYEPISODE_URL, show_id)
-        data = self.send_req(url)
+        url = 'http://www.myepisodes.com/ajax/service.php?mode=view_epsbyshow' #<-update here
+        show_id_num = re.search('epsbyshow\/(\d+)\/', show_id).group(1)
+        post = urllib.urlencode({'showid':show_id_num})
+        data = self.send_req(url, post)
         if data is None:
             return False
         soup = BeautifulSoup(data)
         out = {}
         mylist = soup.find("table", {"class": "mylist"})
-        mylist_tr = mylist.findAll("tr", {"class": ["Episode_One", "Episode_Two"]})
+        mylist_tr = mylist.findAll("tr", {"class": ["odd", "even"]})
         for row in mylist_tr:
             episode = row.find('td', {'class': "longnumber"})
             episode_data = episode.string.split('x')
-            acquired = row.find('input', attrs={'type': "checkbox", "onclick": re.compile("MarkAcquired")})
+            acquired = row.find('input', attrs={'type': "checkbox", "name": re.compile("^A")})
             is_acquired = True if acquired.get('checked') else False
-            viewed = row.find('input', attrs={'type': "checkbox", "onclick": re.compile("MarkViewed")})
+            viewed = row.find('input', attrs={'type': "checkbox", "name": re.compile("^V")})
             is_viewed = True if viewed.get('checked') else False
             out.setdefault(episode_data[0], [])
             out[episode_data[0]].append({'episode': episode_data[1], 'acquired': is_acquired, 'viewed': is_viewed})
@@ -92,16 +96,16 @@ class MyEpisodes(object):
         data = self.get_show_data(show_id)
         out = []
         for season in data:
-            episodes_data = [{'number': episode['episode']} for episode in data[season] if episode['viewed']]
+            episodes_data = [{'number': int(episode['episode'])} for episode in data[season] if episode['viewed']]
             if episodes_data:
-                out.append({'number': season, 'episodes': episodes_data})
+                out.append({'number': int(season), 'episodes': episodes_data})
         return out
 
     def get_collection_episodes(self, show_id):
         data = self.get_show_data(show_id)
         out = []
         for season in data:
-            episodes_data = [{'number': episode['episode']} for episode in data[season] if episode['acquired']]
+            episodes_data = [{'number': int(episode['episode']) } for episode in data[season] if episode['acquired']]
             if episodes_data:
-                out.append({'number': season, 'episodes': episodes_data})
+                out.append({'number': int(season), 'episodes': episodes_data})
         return out
