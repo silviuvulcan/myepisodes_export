@@ -1,4 +1,4 @@
-@silviuvulcan: Forked as the original repo was read-only and one fix was pending as a pull request. I incorporated it and as of 2019-06 it is working.
+@silviuvulcan fork reason: the original repo was read-only and one fix was pending as a pull request. I incorporated it and as of 2019-06 it is working.
 
 Original README below:
 
