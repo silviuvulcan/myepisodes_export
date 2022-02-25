@@ -1,3 +1,9 @@
+## Archived
+
+2022 - beautiful soup is about to be retired, python2 is hard to run and tvdb now charges for api access. At this point I think something like this should be re-written from scratch.
+
+---
+
 @silviuvulcan fork reason: the original repo was read-only and one fix was pending as a pull request. I incorporated it and as of 2019-06 it is working.
 
 Original README below:
